@@ -9,6 +9,8 @@ use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\TwoFactorController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\ModuloController;
+
 // Página principal: redirige a login
 Route::get('/', function () {
     return redirect()->route('login');
@@ -64,10 +66,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/reporte/{codigo}', [ReporteController::class, 'buscarPorCodigo']);
 
     // Recursos
+    Route::get('/roles/{id}/permisos', [RolController::class, 'getPermisos']);
+Route::post('/roles/{id}/permisos', [RolController::class, 'guardarPermisos']);
+
     Route::resource('roles', RolController::class);
     Route::get('/perfil', [EmpleadoController::class, 'perfil'])->name('perfil');
     Route::post('/perfil', [EmpleadoController::class, 'actualizarPerfil'])->name('perfil.actualizar');
     Route::resource('empleados', EmpleadoController::class);
+ 
+
+        
+
+
+
 });
 
 // Rutas 2FA para usuarios autenticados pero que deben verificar 2FA después del login

@@ -50,4 +50,6 @@ class Usuario extends Authenticatable
     {
         return !empty($this->two_factor_secret);
     }
+    
+    
 }

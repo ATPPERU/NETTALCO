@@ -27,9 +27,11 @@
                     <div class="card-header">
                         <h3 class="card-title">Listado de Roles</h3>
                         <div class="card-tools">
+                        @if (tienePermiso('usuarios', 'crear'))
                         <a href="{{ route('empleados.create') }}" class="btn btn-sm btn-primary mb-3 shadow">
                             <i class="fas fa-plus-circle mr-1"></i> Agregar Usuario
                         </a>
+                        @endif
 
 
                         </div>
@@ -61,18 +63,24 @@
                                             @endforeach
                                         </td>
                                         <td>
+                                            @if (tienePermiso('usuarios', 'ver'))
                                             <a href="{{ route('empleados.show', $empleado->id) }}" class="btn btn-info btn-sm" title="Ver">
                                                 <i class="fas fa-eye"></i>
                                             </a>
+                                            @endif
+                                            @if (tienePermiso('usuarios', 'editar'))
                                             <a href="{{ route('empleados.edit', $empleado->id) }}" class="btn btn-warning btn-sm" title="Editar">
                                                 <i class="fas fa-edit"></i>
                                             </a>
+                                            @if (tienePermiso('usuarios', 'eliminar'))
+                                            @endif
                                             <button type="button"
                                                     class="btn btn-danger btn-sm btn-eliminar-empleado"
                                                     data-id="{{ $empleado->id }}"
                                                     title="Eliminar">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
+                                            @endif
 
                                         </td>
                                     </tr>
@@ -104,7 +112,7 @@
             "buttons": [
                 {
                     extend: 'collection',
-                    text: 'Opciones',
+                    text: 'Exportar',
                     buttons: [
                         {
                             extend: 'copy',

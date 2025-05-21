@@ -48,6 +48,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
       [class*=sidebar-dark-] .nav-sidebar>.nav-item>.nav-treeview {
           background-color:rgba(85, 83, 83, 0.4);
       }
+
+      .modal-content {
+        border: 1px solid #007bff; /* borde azul más grueso */
+        border-radius: 1.0rem; /* un poco más redondeado si quieres */
+     }
+
     </style>
     
 </head>
@@ -124,107 +130,116 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-           
-                    
-                
-                
                 <!-- Módulo de Gestión de Usuarios -->
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>Gestión de Usuarios<i class="right fas fa-angle-left"></i></p>
-                    </a>
-                    <ul class="nav nav-treeview">
+                @if(Auth::user()->roles->pluck('nombre')->contains('Administrador'))
+                    <!-- Menú visible solo para administradores -->
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-users-cog"></i>
+                            <p>Gestión de Usuarios<i class="right fas fa-angle-left"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            @if (tienePermiso('roles', 'ver'))
+                            <li class="nav-item">
+                                <a href="{{ route('roles.index') }}" class="nav-link">
+                                    <i class="fas fa-user-shield nav-icon"></i>
+                                    <p>Roles</p>
+                                </a>
+                            </li>
+                            @endif
+                            @if (tienePermiso('usuarios', 'ver'))
+                            <li class="nav-item">
+                                <a href="{{ route('empleados.index') }}" class="nav-link">
+                                    <i class="fas fa-user-friends nav-icon"></i>
+                                    <p>Usuarios</p>
+                                </a>
+                            </li>
+                            @endif
+                        </ul>
+                    </li>
+                @endif
 
-                        <li class="nav-item">
-                            <a href="{{ route('roles.index') }}" class="nav-link">
-                                <i class="fas fa-user nav-icon"></i>
-                                <p>Roles</p>
-                            </a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a href="{{ route('empleados.index') }}" class="nav-link">
-                                <i class="fas fa-user nav-icon"></i>
-                                <p>Usuarios</p>
-                            </a>
-                        </li>
-                       
-                        
-                    </ul>
-                </li>
+
+                <!-- Marcas -->
+                @if (tienePermiso('Travis', 'ver') || tienePermiso('Llben', 'ver') || tienePermiso('Lacoste', 'ver'))
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-users"></i>
+                        <i class="nav-icon fas fa-tags"></i>
                         <p>Marcas<i class="right fas fa-angle-left"></i></p>
                     </a>
                     <ul class="nav nav-treeview">
-
+                        @if (tienePermiso('Travis', 'ver'))
                         <li class="nav-item">
-                          <a href="{{ route('orders.index') }}" class="nav-link">
-                            <i class="fas fa-user nav-icon"></i>
-                              <p>Travis</p>
-                          </a>
+                            <a href="{{ route('orders.index') }}" class="nav-link">
+                                <i class="fas fa-truck nav-icon"></i>
+                                <p>Travis</p>
+                            </a>
                         </li>
-                        
+                        @endif
+                        @if (tienePermiso('Llben', 'ver'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
-                                <i class="fas fa-user nav-icon"></i>
+                                <i class="fas fa-clipboard-list nav-icon"></i>
                                 <p>LLben</p>
                             </a>
                         </li>
+                        @endif
+                        @if (tienePermiso('Lacoste', 'ver'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
-                                <i class="fas fa-user nav-icon"></i>
+                                <i class="fas fa-tshirt nav-icon"></i>
                                 <p>Lacoste</p>
                             </a>
                         </li>
-                       
-                        
+                        @endif
                     </ul>
                 </li>
+                @endif
+
+
+                <!-- Mi Perfil -->
                 <li class="nav-item">
-                  <a href="{{ route('perfil') }}" class="nav-link">
-                    <i class="fas fa-user nav-icon"></i>
-                    <p>Mi Perfil</p>
-                  </a>
-                </li>
-
-
-
-                <li class="nav-item">
-                  <a href="{{ route('reporte.buscar') }}" class="nav-link">
-                    <i class="fas fa-user nav-icon"></i>
-                    <p>Historico</p>
-                  </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('2fa.enable.form') }}" class="nav-link">
-                        <i class="fas fa-lock nav-icon"></i>
-                        <p>Activar 2FA</p>
+                    <a href="{{ route('perfil') }}" class="nav-link">
+                        <i class="fas fa-id-badge nav-icon"></i> <!-- icono para perfil -->
+                        <p>Mi Perfil</p>
                     </a>
                 </li>
 
+                <!-- Reportes -->
+                 @if (tienePermiso('historico', 'ver'))
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-chart-bar"></i> <!-- icono para reportes -->
+                            <p>Reportes<i class="right fas fa-angle-left"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            
+                            <li class="nav-item">
+                                <a href="{{ route('reporte.buscar') }}" class="nav-link">
+                                    <i class="fas fa-history nav-icon"></i> <!-- icono histórico -->
+                                    <p>Historico</p>
+                                </a>
+                            </li>
+                        
 
+                        </ul>
+                    </li>
+                @endif
 
-
+                <!-- Cerrar Sesión -->
                 <li class="nav-item">
-                  <form action="{{ route('logout') }}" method="POST" id="logout-form">
-                      @csrf
-                      <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                          <i class="fas fa-sign-out-alt nav-icon text-danger"></i>
-                          <p>Cerrar Sesión</p>
-                      </a>
-                  </form>
-              </li>
-
-
-              
-                
+                    <form action="{{ route('logout') }}" method="POST" id="logout-form">
+                        @csrf
+                        <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="fas fa-sign-out-alt nav-icon text-danger"></i>
+                            <p>Cerrar Sesión</p>
+                        </a>
+                    </form>
+                </li>
 
             </ul>
         </nav>
+
 
 
         <!-- /.sidebar-menu -->
