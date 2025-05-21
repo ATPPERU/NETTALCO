@@ -96,7 +96,7 @@
 
 <div class="modal fade" id="columnToggleModal" tabindex="-1" aria-labelledby="columnToggleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-xl">
-    <div class="modal-content">
+    <div class="modal-content modal-content-bordered">
       <div class="modal-header">
         <h5 class="modal-title" id="columnToggleModalLabel">Mostrar/Ocultar Columnas</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
@@ -131,7 +131,7 @@
             "buttons": [
                 {
                     extend: 'collection',
-                    text: 'Opciones',
+                    text: 'Exportar',
                     buttons: [
                         { extend: 'copy', text: 'Copiar' },
                         { extend: 'csv', text: 'CSV' },

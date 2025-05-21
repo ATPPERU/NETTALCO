@@ -96,7 +96,7 @@
     "buttons": [
         {
             extend: 'collection',
-            text: 'Opciones',
+            text: 'Exportar',
             buttons: [
                 { extend: 'copy', text: 'Copiar' },
                 { extend: 'csv', text: 'CSV' },

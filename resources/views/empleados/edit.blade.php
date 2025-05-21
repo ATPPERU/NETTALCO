@@ -39,7 +39,7 @@
                             <input type="hidden" name="id_empleado" value="{{ $empleado->id }}">
                             {{-- Datos Personales --}}
                             <div class="card mb-3">
-                                <div class="card-header bg-primary text-white">
+                                <div class="card-header text-white" style="background-color: #031f3b;">
                                     <h5><i class="fas fa-id-card"></i> Datos Personales</h5>
                                 </div>
                                 <div class="card-body row">
@@ -49,15 +49,15 @@
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label>Nombres</label>
-                                        <input type="text" name="nombres" class="form-control" required value="{{ old('nombres', $empleado->nombre) }}" maxlength="20">
+                                        <input type="text" name="nombres" class="form-control" required value="{{ old('nombres', $empleado->nombre) }}" maxlength="20" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]+" title="Solo letras y espacios">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label>Apellidos</label>
-                                        <input type="text" name="apellidos" class="form-control" required value="{{ old('apellidos', $empleado->apellido) }}" maxlength="30">
+                                        <input type="text" name="apellidos" class="form-control" required value="{{ old('apellidos', $empleado->apellido) }}" maxlength="30" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]+" title="Solo letras y espacios">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label>Teléfono</label>
-                                        <input type="text" name="telefono" class="form-control" value="{{ old('telefono', $empleado->telefono) }}" maxlength="12">
+                                        <input type="text" name="telefono" class="form-control" value="{{ old('telefono', $empleado->telefono) }}" maxlength="12" inputmode="numeric" pattern="[0-9]*" title="Solo números">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label>Dirección</label>
@@ -72,7 +72,7 @@
 
                             {{-- Datos de Usuario --}}
                             <div class="card mb-3">
-                                <div class="card-header bg-success text-white">
+                                <div class="card-header text-white" style="background-color: #031f3b;">
                                     <h5><i class="fas fa-user"></i> Datos de Usuario</h5>
                                 </div>
                                 <div class="card-body row">
@@ -96,7 +96,7 @@
 
                             {{-- Roles --}}
                             <div class="card mb-3">
-                                <div class="card-header bg-warning">
+                                <div class="card-header text-white" style="background-color: #031f3b;">
                                     <h5><i class="fas fa-user-shield"></i> Roles</h5>
                                 </div>
                                 <div class="card-body">
@@ -139,8 +139,17 @@
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<!-- validacion de numeros y letras -->
+<script>
+    document.querySelector('input[name="dni"]').addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
 
-
+    document.querySelector('input[name="nombres"]').addEventListener('input', function () {
+        this.value = this.value.replace(/[^a-zA-ZÁÉÍÓÚáéíóúÑñ\s]/g, '');
+    });
+</script>
+<!-- select-->
 <script>
     $(document).ready(function () {
         $('.select2').select2({
@@ -150,7 +159,7 @@
     });
 </script>
 
-
+<!-- editar -->
 <script>
     $('#formEditarEmpleado').submit(function(e) {
         e.preventDefault();

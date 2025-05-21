@@ -42,7 +42,9 @@
                             <button type="submit" class="btn btn-primary">Buscar</button>
                         </form>
 
-
+                        <button id="btn-columnas" class="btn btn-outline-primary mb-3 d-none">
+                            Seleccionar Columnas
+                        </button>
 
                         <!-- Aquí se mostrará la tabla -->
                         <div id="contenedor-tabla"></div>
@@ -52,6 +54,29 @@
             </div>
         </div>
     </div>
+</div>
+
+
+
+<!-- Modal -->
+<!-- Modal de Selección de Columnas -->
+<div class="modal fade" id="modalColvis" tabindex="-1" aria-labelledby="modalColvisLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalColvisLabel">Seleccionar Columnas</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="colvis-body">
+        <!-- checkboxes aquí -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 
@@ -66,6 +91,60 @@
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    let table = null;
+
+    function construirModalColumnas() {
+        if (!table) return;
+
+        const container = document.getElementById('colvis-body');
+        container.innerHTML = '';
+
+        const columnas = table.columns();
+        let row = document.createElement('div');
+        row.className = 'row';
+
+        columnas.every(function (index) {
+            const column = this;
+            const title = column.header().innerText || `Columna ${index + 1}`;
+            const checked = column.visible() ? 'checked' : '';
+
+            const col = document.createElement('div');
+            col.className = 'col-md-6 mb-2'; // 12 / 2 = 6 cols per row (for better spacing use col-md-2 = 6 per row)
+            col.innerHTML = `
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="${index}" id="col-${index}" ${checked}>
+                    <label class="form-check-label" for="col-${index}">${title}</label>
+                </div>
+            `;
+
+            row.appendChild(col);
+
+            // Si ya hay 5 columnas en esta fila, crear una nueva fila
+            if ((index + 1) % 5 === 0) {
+                container.appendChild(row);
+                row = document.createElement('div');
+                row.className = 'row';
+            }
+        });
+
+        // Añadir la fila restante si no está vacía
+        if (row.children.length > 0) {
+            container.appendChild(row);
+        }
+    }
+
+
+    $(document).on('click', '#btn-columnas', function () {
+        construirModalColumnas();
+        $('#modalColvis').modal('show');
+    });
+
+    $(document).on('change', '#colvis-body input[type="checkbox"]', function () {
+        const colIndex = parseInt(this.value);
+        const visible = this.checked;
+        table.column(colIndex).visible(visible);
+    });
+
     $(document).ready(function () {
         $('#form-buscar-reporte').on('submit', function (e) {
             e.preventDefault();
@@ -89,7 +168,7 @@
                             <h3>Reporte: ${response.codigo}</h3>
                             <h5>${response.nombre}</h5>
                             <div class="table-responsive">
-                                <table id="example1" class="table table-bordered table-striped">
+                                <table id="example1" class="table table-bordered table-striped w-100">
                                     <thead><tr>`;
 
                         headers.forEach(header => {
@@ -111,27 +190,26 @@
 
                         $('#contenedor-tabla').html(tabla);
 
-                        const table = $('#example1').DataTable({
+                        table = $('#example1').DataTable({
                             responsive: false,
                             scrollX: true,
                             lengthChange: true,
                             autoWidth: false,
+                            paging: true,
+                            searching: true,
+                            order: [],
+                            info: true,
                             buttons: [
                                 {
                                     extend: 'collection',
-                                    text: 'Opciones',
+                                    text: 'Exportar',
                                     buttons: [
                                         { extend: 'copy', text: 'Copiar' },
                                         { extend: 'csv', text: 'CSV' },
                                         { extend: 'excel', text: 'Excel', title: 'Listado de Órdenes' }
                                     ]
-                                },
-                                { extend: 'colvis', text: 'Visibilidad de Columna' }
+                                }
                             ],
-                            paging: true,
-                            searching: true,
-                            order: [],
-                            info: true,
                             language: {
                                 search: "Buscar:",
                                 lengthMenu: "Mostrar _MENU_ registros por página",
@@ -146,9 +224,11 @@
                         });
 
                         table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+                        $('#btn-columnas').removeClass('d-none'); // Mostrar botón después de renderizar
                     } else {
                         Swal.fire('No encontrado', response.message, 'warning');
-                        $('#contenedor-tabla').empty(); // Limpia resultados anteriores
+                        $('#contenedor-tabla').empty();
+                        $('#btn-columnas').addClass('d-none'); // Ocultar botón
                     }
                 },
                 error: function () {
@@ -158,6 +238,7 @@
         });
     });
 </script>
+
 
 
 

@@ -39,25 +39,26 @@
 
                             {{-- Sección: Datos Personales --}}
                             <div class="card mb-3">
-                                <div class="card-header bg-primary text-white">
+                                <div class="card-header text-white" style="background-color: #031f3b;">
                                     <h5 class="mb-0"><i class="fas fa-id-card"></i> Datos Personales</h5>
                                 </div>
+
                                 <div class="card-body row">
                                     <div class="form-group col-md-6">
                                         <label for="dni"><i class="fas fa-address-card mr-1"></i> DNI</label>
-                                        <input type="text" name="dni" class="form-control" required value="{{ old('dni') }}" maxlength="8">
+                                        <input type="text" name="dni" class="form-control" required value="{{ old('dni') }}" maxlength="8" inputmode="numeric" pattern="[0-9]*" title="Solo números">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="nombres"><i class="fas fa-user mr-1"></i> Nombres</label>
-                                        <input type="text" name="nombres" class="form-control" required value="{{ old('nombres') }}" maxlength="20">
+                                        <input type="text" name="nombres" class="form-control" required value="{{ old('nombres') }}" maxlength="20" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]+" title="Solo letras y espacios">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="apellidos"><i class="fas fa-user-tag mr-1"></i> Apellidos</label>
-                                        <input type="text" name="apellidos" class="form-control" required value="{{ old('apellidos') }}" maxlength="30">
+                                        <input type="text" name="apellidos" class="form-control" required value="{{ old('apellidos') }}" maxlength="30" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]+" title="Solo letras y espacios">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="telefono"><i class="fas fa-phone-alt mr-1"></i> Teléfono</label>
-                                        <input type="text" name="telefono" class="form-control" value="{{ old('telefono') }}" maxlength="12">
+                                        <input type="text" name="telefono" class="form-control" value="{{ old('telefono') }}" maxlength="12" inputmode="numeric" pattern="[0-9]*" title="Solo números">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="direccion"><i class="fas fa-map-marker-alt mr-1"></i> Dirección</label>
@@ -72,7 +73,7 @@
 
                             {{-- Sección: Datos de Usuario --}}
                             <div class="card mb-3">
-                                <div class="card-header bg-success text-white">
+                                <div class="card-header text-white" style="background-color: #031f3b;">
                                     <h5 class="mb-0"><i class="fas fa-user"></i> Datos de Usuario</h5>
                                 </div>
                                 <div class="card-body row">
@@ -96,7 +97,7 @@
 
                             {{-- Sección: Asignar Roles --}}
                             <div class="card mb-3">
-                                <div class="card-header bg-warning text-dark">
+                                <div class="card-header text-white" style="background-color: #031f3b;">
                                     <h5 class="mb-0"><i class="fas fa-user-shield"></i> Roles</h5>
                                 </div>
                                 <div class="card-body">
@@ -116,7 +117,7 @@
                                 <a href="{{ route('empleados.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left"></i> Cancelar
                                 </a>
-                                <button type="submit" class="btn btn-success">
+                                <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save"></i> Guardar
                                 </button>
                             </div>
@@ -187,8 +188,17 @@
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     });
 </script>
+<!-- validacion de numeros y letras -->
+<script>
+    document.querySelector('input[name="dni"]').addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
 
-
+    document.querySelector('input[name="nombres"]').addEventListener('input', function () {
+        this.value = this.value.replace(/[^a-zA-ZÁÉÍÓÚáéíóúÑñ\s]/g, '');
+    });
+</script>
+<!-- select  -->
 <script>
     $(document).ready(function () {
         $('.select2').select2({
@@ -198,7 +208,7 @@
     });
 </script>
 
-
+<!-- agregar -->
 <script>
     $(document).ready(function () {
         $('#form-empleado').on('submit', function (e) {

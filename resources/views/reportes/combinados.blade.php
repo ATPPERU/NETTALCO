@@ -68,7 +68,7 @@
             buttons: [
                 {
                     extend: 'collection',
-                    text: '📁 Exportar',
+                    text: 'Exportar',
                     buttons: [
                         { extend: 'copy', text: 'Copiar' },
                         { extend: 'csv', text: 'CSV' },

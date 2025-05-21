@@ -21,7 +21,7 @@
 
    <div class="login-box">
     <div class="login-logo mb-3">
-        <img src="https://utp.hiringroomcampus.com/assets/media/utp/company_641c7c1786cb2ac7c60f1c82.png" alt="Logo UTP" style="max-width: 150px;">
+        <img src="https://utp.hiringroomcampus.com/assets/media/utp/company_641c7c1786cb2ac7c60f1c82.png" alt="Logo UTP" style="max-width: 280px;">
         <h4 class="mt-2"><b>Iniciar Sesión</b></h4>
     </div>
 
