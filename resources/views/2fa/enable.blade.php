@@ -58,41 +58,64 @@
 
 
 <script>
-$(document).ready(function() {
-    $('#form-2fa').submit(function(e) {
-        e.preventDefault(); // evitar que recargue la página
+$(document).ready(function () {
+    $('#form-2fa').submit(function (e) {
+        e.preventDefault();
 
-        $.ajax({
-            url: "{{ route('2fa.enable') }}",
-            type: "POST",
-            data: $(this).serialize(),
-            success: function(response) {
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Clave generada!',
-                    html: `<p>Tu clave secreta es: <strong>${response.secret}</strong></p>
-                           <div>${response.qr_code_svg}</div>`,
-                    showCancelButton: true,
-                    confirmButtonText: 'Confirmar 2FA',
-                    cancelButtonText: 'Cerrar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = "{{ route('2fa.confirm.form') }}"; 
-                        // Aquí cambia esta ruta a la que tengas para el formulario de confirmación 2FA
-                    }
-                });
+        Swal.fire({
+            icon: 'warning',
+            title: '¿Estás seguro?',
+            html: 'Si ya tienes un código 2FA, este será <strong>reemplazado</strong> y deberás configurarlo nuevamente.<br><br>¿Deseas continuar?',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, continuar',
+            cancelButtonText: 'Cancelar',
+            customClass: {
+                confirmButton: 'btn btn-primary ', // margen derecho para separación
+                cancelButton: 'btn btn-secondary'
             },
-            error: function(xhr) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'No se pudo generar la clave 2FA.'
+            buttonsStyling: false
+        })
+        .then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('2fa.enable') }}",
+                    type: "POST",
+                    data: $('#form-2fa').serialize(),
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Clave generada!',
+                            html: `<p>Tu clave secreta es: <strong>${response.secret}</strong></p>
+                                   <div class="my-3">${response.qr_code_svg}</div>`,
+                            showCancelButton: true,
+                            confirmButtonText: 'Confirmar 2FA',
+                            cancelButtonText: 'Cerrar',
+                            customClass: {
+                                confirmButton: 'btn btn-primary me-2',
+                                cancelButton: 'btn btn-secondary'
+                            },
+                            buttonsStyling: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "{{ route('2fa.confirm.form') }}";
+                            }
+                        });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'No se pudo generar la clave 2FA.'
+                        });
+                    }
                 });
             }
         });
     });
 });
 </script>
+
+
 
 
 

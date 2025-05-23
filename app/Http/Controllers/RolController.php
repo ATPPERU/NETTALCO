@@ -103,7 +103,6 @@ public function guardarPermisos(Request $request, $id)
     $rol = Rol::findOrFail($id);
     $data = $request->input('permisos') ?? [];
 
-    // Lista completa de módulos que deberían tener permisos
     $modulos = [
         'roles',
         'usuarios',
@@ -114,24 +113,53 @@ public function guardarPermisos(Request $request, $id)
         'activar_2fa'
     ];
 
+    // Validación: evitar quitar el permiso de ver 'roles' al rol administrador
+    if (
+        (!isset($data['roles']) || !isset($data['roles']['ver']) || !$data['roles']['ver']) &&
+        $rol->id == 1
+    ) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No se puede quitar el permiso de "ver" del módulo Roles al rol Administrador.'
+        ], 422);
+    }
+
     foreach ($modulos as $modulo) {
-        $acciones = $data[$modulo] ?? [];
+        $acciones = $data[$modulo] ?? null;
 
-        $permiso = Permiso::firstOrNew([
-            'rol_id' => $rol->id,
-            'modulo' => $modulo
-        ]);
+        // Solo actualiza si el módulo viene en el request
+        if ($acciones !== null) {
+            $permiso = Permiso::firstOrNew([
+                'rol_id' => $rol->id,
+                'modulo' => $modulo
+            ]);
 
-        $permiso->puede_ver     = isset($acciones['ver']) ? 1 : 0;
-        $permiso->puede_crear   = isset($acciones['crear']) ? 1 : 0;
-        $permiso->puede_editar  = isset($acciones['editar']) ? 1 : 0;
-        $permiso->puede_eliminar= isset($acciones['eliminar']) ? 1 : 0;
+            // Actualizar solo permisos enviados en el formulario
+            if (array_key_exists('ver', $acciones)) {
+                $permiso->puede_ver = $acciones['ver'] ? 1 : 0;
+            }
 
-        $permiso->save();
+            if (array_key_exists('crear', $acciones)) {
+                $permiso->puede_crear = $acciones['crear'] ? 1 : 0;
+            }
+
+            if (array_key_exists('editar', $acciones)) {
+                $permiso->puede_editar = $acciones['editar'] ? 1 : 0;
+            }
+
+            if (array_key_exists('eliminar', $acciones)) {
+                $permiso->puede_eliminar = $acciones['eliminar'] ? 1 : 0;
+            }
+
+            $permiso->save();
+        }
     }
 
     return response()->json(['success' => true]);
 }
+
+
+
 
 
 

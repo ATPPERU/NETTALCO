@@ -102,7 +102,11 @@ $(document).ready(function() {
                     Swal.fire({
                         title: response.welcome_message,
                         icon: "success",
-                        confirmButtonText: "Ir a Página Principal"
+                        confirmButtonText: "Ir a Página Principal",
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false
                     }).then((result) => {
                         if (result.isConfirmed) {
                             window.location.href = response.redirect_url;
@@ -113,7 +117,11 @@ $(document).ready(function() {
                         title: "Error",
                         text: response.message,
                         icon: "error",
-                        confirmButtonText: "Aceptar"
+                        confirmButtonText: "Aceptar",
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false
                     });
                 }
             },
@@ -129,13 +137,18 @@ $(document).ready(function() {
                     title: "Error",
                     text: errorMessage,
                     icon: "error",
-                    confirmButtonText: "Aceptar"
+                    confirmButtonText: "Aceptar",
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
                 });
             }
         });
     });
 });
 </script>
+
 
 
 

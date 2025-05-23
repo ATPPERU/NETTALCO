@@ -113,10 +113,10 @@
                             {{-- Botones --}}
                             <div class="text-end">
                                 <a href="{{ route('empleados.index') }}" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left"></i> Cancelar
+                                     Cancelar
                                 </a>
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-save"></i> Actualizar
+                                <button type="submit" class="btn btn-primary">
+                                     Actualizar
                                 </button>
                             </div>
                         </form>
@@ -161,38 +161,48 @@
 
 <!-- editar -->
 <script>
-    $('#formEditarEmpleado').submit(function(e) {
-        e.preventDefault();
+    $(document).ready(function () {
+        // Configuración de Toastr
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            positionClass: "toast-top-right",
+            timeOut: "1000"
+        };
 
-        let formData = new FormData(this);
-        let empleadoId = $('input[name="id_empleado"]').val();
+        $('#formEditarEmpleado').submit(function(e) {
+            e.preventDefault();
 
-        $.ajax({
-            url: `/empleados/${empleadoId}`,
-            method: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Actualizado',
-                    text: response.message
-                }).then(() => {
-                    window.location.href = "{{ route('empleados.index') }}";
-                });
-            },
-            error: function(xhr) {
-                let mensaje = xhr.responseJSON?.message || 'Error al actualizar';
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: mensaje
-                });
-            }
+            let formData = new FormData(this);
+            let empleadoId = $('input[name="id_empleado"]').val();
+
+            let $submitBtn = $(this).find('button[type="submit"]');
+            $submitBtn.prop('disabled', true).text('Actualizando...');
+
+            $.ajax({
+                url: `/empleados/${empleadoId}`,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    toastr.success(response.message || 'Empleado actualizado con éxito.');
+                    setTimeout(() => {
+                        window.location.href = "{{ route('empleados.index') }}";
+                    });
+                },
+                error: function(xhr) {
+                    let mensaje = xhr.responseJSON?.message || 'Error al actualizar el empleado.';
+                    toastr.error(mensaje, 'Error');
+                },
+                complete: function () {
+                    $submitBtn.prop('disabled', false).text('Guardar cambios');
+                }
+            });
         });
     });
 </script>
+
 
 
 @endsection

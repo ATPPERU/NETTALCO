@@ -34,7 +34,8 @@
                     </div>
                     <div class="card-body">
                         
-                        <form id="perfil-form">
+                        <form id="perfil-form" enctype="multipart/form-data" method="POST">
+
                             @csrf
                             <div class="card-body">
 
@@ -82,6 +83,17 @@
                                                 <input type="password" name="password_confirmation" class="form-control" maxlength="15">
                                             </div>
                                         </div>
+
+                                        <div class="form-group">
+                                            <label for="foto">Foto de Perfil</label>
+                                            <input type="file" name="foto" class="form-control-file" accept="image/*">
+                                            @if($empleado->foto)
+                                                <div class="mt-2">
+                                                    <img src="{{ asset($empleado->foto) }}" alt="Foto actual" style="max-width: 180px;" class="img-thumbnail">
+                                                </div>
+                                            @endif
+                                        </div>
+
                                     </div>
                                 </div>
 
@@ -125,39 +137,35 @@
 
 <script>
     $('#perfil-form').on('submit', function (e) {
-        e.preventDefault();
+    e.preventDefault();
 
-        $.ajax({
-            url: "{{ route('perfil.actualizar') }}",
-            type: "POST",
-            data: $(this).serialize(),
-            success: function (response) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Perfil actualizado',
-                    text: response.message,
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            },
-            error: function (xhr) {
-                let errors = xhr.responseJSON?.errors;
-                let msg = 'Ocurrió un error inesperado.';
-                if (errors) {
-                    msg = Object.values(errors).flat().join('<br>');
-                } else if (xhr.responseJSON?.message) {
-                    msg = xhr.responseJSON.message;
-                }
+    let formData = new FormData(this); // ✅ permite enviar archivos
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    html: msg,
-                });
+    $.ajax({
+        url: "{{ route('perfil.actualizar') }}",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            toastr.success(response.message || 'Perfil actualizado con éxito');
+        },
+        error: function (xhr) {
+            let errors = xhr.responseJSON?.errors;
+            let msg = 'Ocurrió un error inesperado.';
+            if (errors) {
+                msg = Object.values(errors).flat().join('<br>');
+            } else if (xhr.responseJSON?.message) {
+                msg = xhr.responseJSON.message;
             }
-        });
+
+            toastr.error(msg);
+        }
     });
+});
+
 </script>
+
 
 
 

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
+use App\Notifications\CustomResetPasswordNotification;
 class Usuario extends Authenticatable
 {
     use Notifiable;
@@ -51,5 +51,8 @@ class Usuario extends Authenticatable
         return !empty($this->two_factor_secret);
     }
     
-    
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPasswordNotification($token));
+    }
 }
