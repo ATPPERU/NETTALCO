@@ -201,7 +201,7 @@ public function actualizarPerfil(Request $request)
         'direccion' => 'nullable|string|max:255',
         'email' => 'required|email|unique:usuarios,email,' . $user->id,
         'password' => 'nullable|min:6|confirmed',
-        'foto' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // ✅ validación para foto
+        'foto' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:10', // ✅ validación para foto
     ]);
 
     DB::beginTransaction();

@@ -19,7 +19,9 @@ Route::get('/', function () {
 // Rutas para login/logout (solo invitados)
 Route::middleware('guest')->group(function () {
     Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('login', [LoginController::class, 'login']);
+    // login
+    Route::post('login', [LoginController::class, 'login'])->middleware('throttle:5,1');
+
     //Rutas de recuperación de contraseña
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
@@ -62,12 +64,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/reporte/buscar', [ReporteController::class, 'searchForm'])->name('reporte.buscar');
     Route::get('/reporte/buscar/resultados', [ReporteController::class, 'search'])->name('reporte.buscar.resultados');
     Route::post('/reportes/guardar', [ReporteController::class, 'guardar'])->name('reportes.guardar');
-    Route::post('/importar-excel', [ReporteController::class, 'importarExcel'])->name('importar.excel');
-    Route::get('/api/reporte/{codigo}', [ReporteController::class, 'buscarPorCodigo']);
+    Route::post('/importar-excel', [ReporteController::class, 'importarExcel'])
+    ->middleware('throttle:10,1')
+    ->name('importar.excel');
+
+    Route::middleware('auth')->get('/api/reporte/{codigo}', [ReporteController::class, 'buscarPorCodigo']);
+
 
     // Recursos
     Route::get('/roles/{id}/permisos', [RolController::class, 'getPermisos']);
-Route::post('/roles/{id}/permisos', [RolController::class, 'guardarPermisos']);
+    Route::post('/roles/{id}/permisos', [RolController::class, 'guardarPermisos']);
 
     Route::resource('roles', RolController::class);
     Route::get('/perfil', [EmpleadoController::class, 'perfil'])->name('perfil');
@@ -87,5 +93,5 @@ Route::middleware(\App\Http\Middleware\TwoFactorMiddleware::class)->group(functi
     Route::get('/2fa', [TwoFactorController::class, 'show2faForm'])->name('2fa.verify.form');
 
     // Verificar código 2FA
-    Route::post('/2fa', [TwoFactorController::class, 'verify2fa'])->name('2fa.verify');
+   Route::post('/2fa', [TwoFactorController::class, 'verify2fa'])->middleware('throttle:5,1');
 });

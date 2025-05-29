@@ -79,6 +79,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 #colvis-body label input[type="checkbox"] {
   margin-right: 0.5rem;
 }
+.ml-11px {
+        margin-left: 11px !important;
+    }
 
     </style>
     
@@ -125,13 +128,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <div style="text-align: center;">
     <a href="#" class="brand-link">
-        <img src="{{ asset('images/123654.png') }}" style="max-width: 200px;">
-
-
-        <span class="brand-text font-weight-light" style="max-width: 200px; display:none;">NETTALCO</span>        
-
+        <img src="{{ asset('images/123654.png') }}" style="max-width: 200px;" class="brand-text font-weight-light">    
     </a>
+</div>
+
 
     <div class="sidebar">
         <!-- Información del usuario -->

@@ -63,38 +63,24 @@
 <!-- Modal -->
 <!-- Modal Seleccionar Columnas -->
 <!-- Modal para visibilidad de columnas -->
-<div class="modal fade" id="modalColvis" tabindex="-1" role="dialog" aria-labelledby="modalColvisLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-    <div class="modal-content shadow-lg border-0 rounded-3">
-      <div class="modal-header" style="background-color: #031f3b;">
-        <h5 class="modal-title text-white" id="modalColvisLabel">Seleccionar Columnas</h5>
-        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
-          <span aria-hidden="true" style="font-size: 1.5rem;">&times;</span>
-        </button>
+<!-- Modal -->
+<div class="modal fade" id="modalColvis" tabindex="-1" aria-labelledby="modalColvisLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalColvisLabel">Seleccionar Columnas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
-      <div class="modal-body" id="colvis-body" style="max-height: 60vh; overflow-y: auto;">
-        <input type="text" id="filtro-columnas" class="form-control mb-3" placeholder="Buscar columna...">
-        <div class="form-row" id="checkboxes-columnas">
-          <div class="form-group col-md-4">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="col1" checked>
-              <label class="form-check-label" for="col1">Columna 1</label>
-            </div>
-          </div>
-          <div class="form-group col-md-4">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="col2">
-              <label class="form-check-label" for="col2">Columna 2</label>
-            </div>
-          </div>
-        </div>
+      <div class="modal-body" id="colvis-body">
+        <!-- Aquí se insertan los checkboxes -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
 </div>
+
 
 
 
@@ -112,9 +98,18 @@
         const container = document.getElementById('colvis-body');
         container.innerHTML = '';
 
-        const columnas = table.columns();
+        // Crear input de filtro
+        const inputFiltro = document.createElement('input');
+        inputFiltro.type = 'text';
+        inputFiltro.id = 'filtro-columnas';
+        inputFiltro.className = 'form-control mb-3';
+        inputFiltro.placeholder = 'Buscar columna...';
+        container.appendChild(inputFiltro);
+
         let row = document.createElement('div');
         row.className = 'row';
+
+        const columnas = table.columns();
 
         columnas.every(function (index) {
             const column = this;
@@ -144,6 +139,17 @@
         if (row.children.length > 0) {
             container.appendChild(row);
         }
+
+        // Filtrar checkboxes al escribir en el input
+        inputFiltro.addEventListener('input', function () {
+            const filter = this.value.toLowerCase();
+            const labels = container.querySelectorAll('.form-check-label');
+
+            labels.forEach(label => {
+                const text = label.textContent.toLowerCase();
+                label.parentElement.parentElement.style.display = text.includes(filter) ? '' : 'none';
+            });
+        });
     }
 
     $(document).on('click', '#btn-columnas', function () {
@@ -244,8 +250,10 @@
                         buttonContainer.appendTo('#example1_wrapper .col-md-6:eq(0)');
 
                         // Agregar botón independiente para columnas con margen aumentado
-                        $('<button id="btn-columnas" class="btn btn-secondary ms-4">Seleccionar Columnas</button>')
-                            .appendTo(buttonContainer);
+                        if (!$('#btn-columnas').length) {
+                            $('<button id="btn-columnas" class="btn btn-secondary ms-4">Seleccionar Columnas</button>')
+                                .appendTo(buttonContainer);
+                        }
 
                     } else {
                         Swal.fire('No encontrado', response.message, 'warning');
@@ -259,6 +267,7 @@
         });
     });
 </script>
+
 
 
 

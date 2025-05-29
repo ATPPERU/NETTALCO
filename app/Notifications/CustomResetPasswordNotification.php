@@ -5,8 +5,7 @@ namespace App\Notifications;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Mail;
+
 class CustomResetPasswordNotification extends ResetPassword
 {
     use Queueable;
@@ -24,20 +23,19 @@ class CustomResetPasswordNotification extends ResetPassword
     }
 
     public function toMail($notifiable)
-{
-    $url = url(route('password.reset', [
-        'token' => $this->token,
-        'email' => $notifiable->getEmailForPasswordReset(),
-    ], false));
+    {
+        $url = url(route('password.reset', [
+            'token' => $this->token,
+            'email' => $notifiable->getEmailForPasswordReset(),
+        ], false));
 
-    return (new MailMessage)
-        ->subject('Recuperación de contraseña')
-        ->view('emails.password-reset', [
-            'url' => $url,
-            'user' => $notifiable,
-        ]);
-}
-
+        return (new MailMessage)
+            ->subject('Recuperación de contraseña')
+            ->markdown('emails.password-reset', [
+                'url' => $url,
+                'user' => $notifiable,
+            ]);
+    }
 
     public function toArray($notifiable)
     {
