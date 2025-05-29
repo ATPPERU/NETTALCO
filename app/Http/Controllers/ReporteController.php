@@ -101,6 +101,11 @@ public function guardar(Request $request)
 }
 public function importarExcel(Request $request)
 {
+
+    $request->validate([
+        'archivo_excel' => 'required|file|mimes:xlsx,xls|max:2048',
+    ]);
+
     $file = $request->file('archivo_excel');
 
     if (!$file) {

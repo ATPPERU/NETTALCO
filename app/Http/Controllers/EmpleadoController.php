@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 class EmpleadoController extends Controller
 {
     public function index()
@@ -200,22 +201,47 @@ public function actualizarPerfil(Request $request)
         'direccion' => 'nullable|string|max:255',
         'email' => 'required|email|unique:usuarios,email,' . $user->id,
         'password' => 'nullable|min:6|confirmed',
+        'foto' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:10', // ✅ validación para foto
     ]);
 
     DB::beginTransaction();
 
     try {
+        //  Procesar la foto si fue enviada
+        if ($request->hasFile('foto')) {
+            $foto = $request->file('foto');
+
+            // Crear carpeta si no existe
+            $ruta = public_path('fotos');
+            if (!File::exists($ruta)) {
+                File::makeDirectory($ruta, 0755, true);
+            }
+
+            // Generar nombre único
+            $nombreFoto = uniqid('empleado_') . '.' . $foto->getClientOriginalExtension();
+            $foto->move($ruta, $nombreFoto);
+
+            // Eliminar foto anterior si existe
+            if ($empleado->foto && File::exists(public_path($empleado->foto))) {
+                File::delete(public_path($empleado->foto));
+            }
+
+            // Guardar ruta relativa
+            $empleado->foto = 'fotos/' . $nombreFoto;
+        }
+
+        // Actualizar usuario
         $user->update([
             'email' => $request->email,
             'password' => $request->password ? bcrypt($request->password) : $user->password,
         ]);
 
-        $empleado->update([
-            'nombre' => $request->nombres,
-            'apellido' => $request->apellidos,
-            'telefono' => $request->telefono,
-            'direccion' => $request->direccion,
-        ]);
+        // Actualizar empleado
+        $empleado->nombre = $request->nombres;
+        $empleado->apellido = $request->apellidos;
+        $empleado->telefono = $request->telefono;
+        $empleado->direccion = $request->direccion;
+        $empleado->save();
 
         DB::commit();
 

@@ -44,7 +44,7 @@
                 url: "/2fa", // Ruta de verificación
                 method: "POST",
                 data: {
-                    one_time_password: $('#one_time_password').val(), // 👈 CORRECTO AHORA
+                    one_time_password: $('#one_time_password').val(),
                     _token: $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
@@ -52,7 +52,11 @@
                         Swal.fire({
                             title: "¡Código válido!",
                             icon: "success",
-                            confirmButtonText: "Continuar"
+                            confirmButtonText: "Continuar",
+                            customClass: {
+                                confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false
                         }).then(() => {
                             window.location.href = response.redirect_url;
                         });
@@ -61,7 +65,11 @@
                             title: "Código inválido",
                             text: response.message || "El código no es correcto.",
                             icon: "error",
-                            confirmButtonText: "Intentar de nuevo"
+                            confirmButtonText: "Intentar de nuevo",
+                            customClass: {
+                                confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false
                         });
                     }
                 },
@@ -73,13 +81,19 @@
                     Swal.fire({
                         title: "Error",
                         text: msg,
-                        icon: "error"
+                        icon: "error",
+                        confirmButtonText: "Aceptar",
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false
                     });
                 }
             });
         });
     });
 </script>
+
 
 </body>
 </html>

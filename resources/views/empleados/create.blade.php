@@ -115,10 +115,10 @@
                             {{-- Botones --}}
                             <div class="text-end">
                                 <a href="{{ route('empleados.index') }}" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left"></i> Cancelar
+                                     Cancelar
                                 </a>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save"></i> Guardar
+                                     Guardar
                                 </button>
                             </div>
                         </form>
@@ -211,6 +211,15 @@
 <!-- agregar -->
 <script>
     $(document).ready(function () {
+
+        // Configurar Toastr
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            positionClass: "toast-top-right",
+            timeOut: "1000"
+        };
+
         $('#form-empleado').on('submit', function (e) {
             e.preventDefault();
 
@@ -218,52 +227,39 @@
             let url = form.attr('action');
             let formData = new FormData(this);
 
+            // Mostrar un loader básico
+            let $submitBtn = form.find('button[type="submit"]');
+            $submitBtn.prop('disabled', true).text('Guardando...');
+
             $.ajax({
                 url: url,
                 method: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
-                beforeSend: function () {
-                    Swal.fire({
-                        title: 'Guardando...',
-                        text: 'Espere un momento',
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
-                },
                 success: function (response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Registro exitoso!',
-                        text: 'El empleado ha sido creado correctamente.',
-                        timer: 2000,
-                        showConfirmButton: false
-                    }).then(() => {
+                    toastr.success('El empleado ha sido creado correctamente.', '¡Registro exitoso!');
+                    setTimeout(() => {
                         window.location.href = "{{ route('empleados.index') }}";
                     });
                 },
                 error: function (xhr) {
-                    Swal.close();
                     let errores = xhr.responseJSON?.errors || {};
-
                     let mensaje = "Ocurrió un error al guardar los datos.";
+
                     if (Object.keys(errores).length) {
-                        mensaje = Object.values(errores).map(m => `<li>${m}</li>`).join('');
-                        mensaje = `<ul class="text-left">${mensaje}</ul>`;
+                        mensaje = Object.values(errores).join('\n');
                     }
 
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        html: mensaje
-                    });
+                    toastr.error(mensaje, 'Error');
+                },
+                complete: function () {
+                    $submitBtn.prop('disabled', false).text('Guardar');
                 }
             });
         });
     });
 </script>
+
 
 @endsection

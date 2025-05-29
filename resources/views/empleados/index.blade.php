@@ -27,11 +27,11 @@
                     <div class="card-header">
                         <h3 class="card-title">Listado de Roles</h3>
                         <div class="card-tools">
-                        @if (tienePermiso('usuarios', 'crear'))
+                        
                         <a href="{{ route('empleados.create') }}" class="btn btn-sm btn-primary mb-3 shadow">
-                            <i class="fas fa-plus-circle mr-1"></i> Agregar Usuario
+                             Agregar Usuario
                         </a>
-                        @endif
+                        
 
 
                         </div>
@@ -63,26 +63,18 @@
                                             @endforeach
                                         </td>
                                         <td>
-                                            @if (tienePermiso('usuarios', 'ver'))
-                                            <a href="{{ route('empleados.show', $empleado->id) }}" class="btn btn-info btn-sm" title="Ver">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            @endif
-                                            @if (tienePermiso('usuarios', 'editar'))
                                             <a href="{{ route('empleados.edit', $empleado->id) }}" class="btn btn-warning btn-sm" title="Editar">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-edit text-white"></i>
                                             </a>
-                                            @if (tienePermiso('usuarios', 'eliminar'))
-                                            @endif
+                                            
                                             <button type="button"
                                                     class="btn btn-danger btn-sm btn-eliminar-empleado"
                                                     data-id="{{ $empleado->id }}"
                                                     title="Eliminar">
-                                                <i class="fas fa-trash-alt"></i>
+                                                <i class="fas fa-trash-alt text-white"></i>
                                             </button>
-                                            @endif
-
                                         </td>
+
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -155,48 +147,53 @@
 
 
 <script>
-    $(document).on('click', '.btn-eliminar-empleado', function () {
-        let empleadoId = $(this).data('id');
+    $(document).ready(function () {
 
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡Esta acción no se puede deshacer!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: `/empleados/${empleadoId}`,
-                    type: 'POST',
-                    data: {
-                        _method: 'DELETE',
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function (response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Eliminado',
-                            text: response.message
-                        }).then(() => {
-                            location.reload(); // O eliminar la fila con JS si prefieres
-                        });
-                    },
-                    error: function (xhr) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: xhr.responseJSON?.message || 'Ocurrió un error inesperado.'
-                        });
-                    }
-                });
-            }
+        // Configuración global de Toastr
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "1000"
+        };
+
+        $(document).on('click', '.btn-eliminar-empleado', function () {
+            let empleadoId = $(this).data('id');
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción no se puede deshacer!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#0d6efd', // Bootstrap primary
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/empleados/${empleadoId}`,
+                        type: 'POST',
+                        data: {
+                            _method: 'DELETE',
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function (response) {
+                            toastr.success(response.message || 'Empleado eliminado correctamente.', 'Eliminado');
+                            setTimeout(() => location.reload());
+                        },
+                        error: function (xhr) {
+                            let errorMsg = xhr.responseJSON?.message || 'Ocurrió un error inesperado.';
+                            toastr.error(errorMsg, 'Error');
+                        }
+                    });
+                }
+            });
         });
+
     });
 </script>
+
 
 
 

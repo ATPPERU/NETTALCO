@@ -27,6 +27,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/bootstrap-switch/css/bootstrap3/bootstrap-switch.min.css') }}">
+    <!-- CSS de Toastr -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+<!-- Bootstrap 5.3.2 CSS -->
+
+
+
+
+
     <style>
       .select2-container .select2-selection--single {
           box-sizing: border-box;
@@ -54,6 +62,27 @@ scratch. This page gets rid of all links and provides the needed markup only.
         border-radius: 1.0rem; /* un poco más redondeado si quieres */
      }
 
+     .form-check-label {
+        word-break: break-word;
+        white-space: normal;
+    }
+
+    .reporte-titulo {
+        margin-bottom: 2rem; /* 3 rem, más espacio */
+    }
+#colvis-body label {
+  display: block; /* o inline-block según diseño */
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+}
+
+#colvis-body label input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+.ml-11px {
+        margin-left: 11px !important;
+    }
+
     </style>
     
 </head>
@@ -67,6 +96,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
+      <!--
       <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Inicio</a>
         
@@ -75,10 +105,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <a href="#" class="nav-link">Contacto</a>
       </li>
     </ul>
-
+-->
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-      <!-- Navbar Search -->
+      <!-- Navbar Search 
      
 
       
@@ -92,23 +122,29 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <i class="fas fa-th-large"></i>
         </a>
       </li>
-    </ul>
+    </ul>-->
   </nav>
   <!-- /.navbar -->
 
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <div style="text-align: center;">
     <a href="#" class="brand-link">
-        <img src="{{ asset('adminlte/dist/img/AdminLTELogo.png') }}" class="brand-image img-circle elevation-3" style="opacity: .8" alt="User Image">
-        <span class="brand-text font-weight-light">NETTALCO</span>        
-
+        <img src="{{ asset('images/123654.png') }}" style="max-width: 200px;" class="brand-text font-weight-light">    
     </a>
+</div>
+
 
     <div class="sidebar">
         <!-- Información del usuario -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{{ asset('adminlte/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="User Image">
+                <img 
+                    src="{{ Auth::user()->empleado && Auth::user()->empleado->foto 
+                        ? asset(Auth::user()->empleado->foto) 
+                        : asset('adminlte/dist/img/user2-160x160.jpg') }}" 
+                    class="img-circle elevation-2" 
+                    alt="User Image">
             </div>
             <div class="info">
                 
@@ -299,6 +335,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <!-- Bootstrap Switch JS -->
 <script src="{{ asset('adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
-
+<!-- JS de Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 </body>
 </html>
